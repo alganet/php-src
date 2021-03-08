@@ -62,6 +62,29 @@ Configure your build. `--enable-debug` is recommended for development, see
     ./configure --enable-debug
     # For production
     ./configure
+    # For cosmopolitan builds
+    ./configure \
+        --host="x86_64-pc-linux"\
+        --disable-all \
+        --without-pcre-jit \
+        --disable-cgi \
+        --disable-ipv6 \
+        CC="gcc" \
+        CFLAGS="-Wextra -std=c99 -static -fno-pie -no-pie -mno-red-zone -nostdlib \
+          -nostdinc -fno-omit-frame-pointer -pg -mnop-mcount \
+          -I./include \
+          -include ./cosmopolitan/cosmopolitan.h" \
+        LDFLAGS="-static -nostdlib -nostdinc -fno-pie \
+          -no-pie -mno-red-zone \
+          -include ./cosmopolitan/cosmopolitan.h" \
+        LIBS="\
+          -Wl,--gc-sections -fuse-ld=bfd \
+          -Wl,-T,./cosmopolitan/ape.lds \
+          -include ./cosmopolitan/cosmopolitan.h \
+          ./cosmopolitan/crt.o \
+          ./cosmopolitan/ape.o \
+          ./cosmopolitan/cosmopolitan.a "
+
 
 Build PHP. To speed up the build, specify the maximum number of jobs using `-j`:
 
